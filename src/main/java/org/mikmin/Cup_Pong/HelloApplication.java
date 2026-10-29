@@ -13,28 +13,136 @@ import java.io.IOException;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+        Ball testBall = new Ball(100, 500, 320, 60);
 
-        // this is just testing,attempting to get the animation to work correctly
-        Ball testBall = new Ball(350,350,100,90);
 
-        // a for loop that generates 100 lines of the animation, which is a bit overkill but works, the amount of times/ how many anims are generated can easily be changed
-        for (int i = 0; i < 100; i++) {
-            testBall.nextPosition();
+        Cup[] cups = {
+                new Cup(450, 400),
+                new Cup(570, 300)
+        };
+
+
+        HitBox[] allHitBoxes =
+                new HitBox[cups.length * 3];
+
+        int index = 0;
+
+        for (Cup cup : cups) {
+            for (HitBox hitbox : cup.getHitBoxes()) {
+                allHitBoxes[index] = hitbox;
+                index++;
+            }
         }
-
-        //test button
         Button playButton = new Button("Fire!");
 
+        playButton.setLayoutX(20);
+        playButton.setLayoutY(20);
+
+
+        Pane pane = new Pane();
+
+
+        pane.getChildren().addAll(cups);
+        pane.getChildren().addAll(
+                testBall.getCircle(),
+                playButton
+        );
+
+        // Fire button action
         playButton.setOnAction(e -> {
-            // the .play() method should only be run once the full animation is generated
+
+            // Prevent firing again during this shot
+            playButton.setDisable(true);
+
+            boolean collision = false;
+            boolean scoringEnabled = false;
+
+            int steps = 0;
+            int maxSteps = 200;
+
+            double radius = testBall.getCircle().getRadius();
+
+
+            while (!collision && steps < maxSteps) {
+
+
+                testBall.nextPosition();
+                steps++;
+
+
+                double ballX = testBall.getSimX();
+                double ballY = testBall.getSimY();
+
+
+                for (HitBox hitbox : allHitBoxes) {
+
+                    if (hitbox.Iscolliding(
+                            ballX,
+                            ballY,
+                            radius)) {
+
+
+                        if (hitbox.isScoring()) {
+
+                            scoringEnabled = true;
+
+                            System.out.println(
+                                    "Scoring hitbox reached!"
+                            );
+
+                        } else {
+
+                            System.out.println(
+                                    "Ball hit a cup wall!"
+                            );
+                        }
+
+
+                        collision = true;
+                        break;
+                    }
+                }
+
+
+                if (ballY + radius >= 690) {
+
+                    collision = true;
+
+                    System.out.println(
+                            "Ball hit the ground!"
+                    );
+                }
+
+
+                if (ballX - radius > 700
+                        || ballX + radius < 0) {
+
+                    collision = true;
+
+                    System.out.println(
+                            "Ball left the screen!"
+                    );
+                }
+            }
+
+
+            if (scoringEnabled) {
+
+                System.out.println(
+                        "Scoring enabled for this shot!"
+                );
+            }
+
+
             testBall.play();
         });
 
-        // basic javaFX structure, feel free to change to a fxml format
-        Pane pane = new Pane(testBall.getCircle(), playButton);
+
         Scene scene = new Scene(pane, 700, 700);
-        stage.setTitle("Hello!");
+
+        stage.setTitle("Cup Pong");
         stage.setScene(scene);
         stage.show();
+
     }
 }

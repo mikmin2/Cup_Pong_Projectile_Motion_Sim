@@ -24,7 +24,7 @@ public class Ball {
     // unused boolean that is free if you want to use it
     private boolean isOverlapping;
     // the gravity value of the simulation, feel free to adjust to your liking
-    private final static double YAccel = 98;
+    private final static double YAccel = 196;
     // the grouping of transition animations, which plays them in order when .play() is called
     private static SequentialTransition path = new SequentialTransition();
     // internal value for calculations, this is the current final  X position of the ball at the end of the animation
