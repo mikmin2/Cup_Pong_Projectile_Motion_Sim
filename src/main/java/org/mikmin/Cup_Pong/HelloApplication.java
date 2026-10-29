@@ -10,6 +10,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+
+// git repository: https://github.com/mikmin2/Cup_Pong_Projectile_Motion_Sim
+// trello link: https://trello.com/b/58tcbji0/cup-pong-java-project
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
